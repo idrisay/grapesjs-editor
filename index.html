@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="export">Export</button>
+    <button id="import">Import</button>
+    <div id="gjs"></div>
+
+    <script type="text/javascript" src="https://unpkg.com/grapesjs"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-blocks-basic"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-typed@1.0.5"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-custom-code@1.0.1"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-plugin-export@1.0.11"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-tabs@1.0.6"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/grapesjs-style-bg@1.0.5"
+    ></script>
+
+    <!-- Change code view -->
+    <script src="https://unpkg.com/grapesjs-parser-postcss"></script>
+    <link
+      href="https://unpkg.com/grapesjs-component-code-editor/dist/grapesjs-component-code-editor.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/grapesjs-component-code-editor"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.css">
+    <script src="https://unpkg.com/grapesjs-preset-newsletter@0.2.21/dist/grapesjs-preset-newsletter.min.js"></script>
+
+    <script type="text/javascript">
+      var editor = grapesjs.init({
+        container: "#gjs",
+        components: '<div class="text-red">Welcome</div>',
+        style: ".text-red{color: red}",
+        storageManager: false,
+        plugins: [
+          "gjs-blocks-basic",
+          "grapesjs-plugin-export",
+          "grapesjs-tabs",
+          "grapesjs-custom-code",
+          "grapesjs-tui-image-editor",
+          "grapesjs-typed",
+          "grapesjs-style-bg",
+          "grapesjs-preset-webpage",
+          "grapesjs-component-code-editor",
+          "grapesjs-parser-postcss",
+          'gjs-preset-newsletter'
+        ],
+        pluginsOpts: {
+          "gjs-blocks-basic": {},
+          "grapesjs-component-code-editor": {
+            /* Test here your options  */
+          },
+          'gjs-preset-newsletter': {
+          modalTitleImport: 'Import template',
+          // ... other options
+        }
+        },
+      });
+
+      const pn = editor.Panels;
+      const panelViews = pn.addPanel({
+        id: "views",
+      });
+      panelViews.get("buttons").add([
+        {
+          attributes: {
+            title: "Open Code",
+          },
+          className: "fa fa-file-code-o",
+          command: "open-code",
+          togglable: false, //do not close when button is clicked again
+          id: "open-code",
+        },
+      ]);
+
+      const htmlBody = '<p id="i7au" style="box-sizing: border-box; color: #7d1f1f;">from export</p>';
+      document.querySelector("#import").onclick = () => {
+        editor.setComponents(htmlBody);
+      };
+
+      document.querySelector("#export").onclick = () => {
+        var reg = /\<body[^>]*\>([^]*)\<\/body/m;
+        var htmlWithCss = editor.runCommand('gjs-get-inlined-html');
+        let withoutBodyTag = htmlWithCss.match(reg)[1];
+        console.log('EXPORT ->', withoutBodyTag)
+        // let content = editor.getHtml();
+        // let newContent = content.match(reg)[1];
+        // console.log("export", newContent, htmlWithCss);
+      };
+
+      window.onload = () => {
+        editor.setComponents("<p>asdasd</p>");
+      };
+    </script>
+  </body>
+</html>
